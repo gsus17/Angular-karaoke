@@ -1,0 +1,21 @@
+<div class="app">
+  <div class="p1">
+    <div class="app-nav">
+    </div>
+
+    <div class="app-body">
+      <div class="app-body-content" *ngIf="currentSong">
+        <app-player [currentSong]="currentSong">
+        </app-player>
+      </div>
+
+      <div class="app-body-songlist p1" *ngIf="!currentSong">
+        <app-song-selection [songList]="songList" [currentSong]="currentSong" (onChooseSong)="handleChooseSong($event)"></app-song-selection>
+      </div>
+    </div>
+
+    <button class="app-backbutton" *ngIf="currentSong" (click)="handleClearCurrentSong()">
+      ← Back to list of songs
+    </button>
+  </div>
+</div>

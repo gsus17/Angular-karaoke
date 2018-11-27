@@ -1,0 +1,97 @@
+@-webkit-keyframes pulse {
+  0% {
+    color: #AAA;
+  }
+
+  50% {
+    color: #FFF;
+  }
+
+  100% {
+    color: #AAA;
+  }
+}
+
+@-moz-keyframes pulse {
+  0% {
+    color: #AAA;
+  }
+
+  50% {
+    color: #FFF;
+  }
+
+  100% {
+    color: #AAA;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    color: #AAA;
+  }
+
+  50% {
+    color: #FFF;
+  }
+
+  100% {
+    color: #AAA;
+  }
+}
+
+:host {
+  color: white;
+  font-weight: 300;
+  text-align: center;
+}
+
+p {
+  color: rgba(255, 255, 255, .4);
+  font-size: 14px;
+  margin: .5rem 0;
+  transition: all 500ms ease;
+}
+
+.highlighted {
+  /* color: #999; */
+  color: red;
+  /* @include animation(pulse 0.3s ease-out); */
+}
+
+.active {
+  color: rgba(255, 255, 255, 1);
+  font-size: 26px;
+  margin: 1.25rem 0;
+  /* color: #999; */
+  /* -webkit-animation: pulse 5s ease-out;
+  -moz-animation: pulse 5s ease-out;
+  animation: pulse 5s ease-out; */
+}
+
+.karaoke-caption {
+  padding-top: 30px;
+  text-align: center;
+  font-size: 20pt;
+  font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+  font-weight: 300;
+}
+
+.karaoke-caption span {
+  color: #555;
+}
+
+.karaoke-caption span.highlighted {
+  color: #999;
+  -webkit-animation: pulse .3s ease-out;
+  -moz-animation: pulse .3s ease-out;
+  animation: pulse .3s ease-out;
+}
+
+canvas.sketch {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+}

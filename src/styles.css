@@ -1,0 +1,117 @@
+/**
+ * RESET
+ */
+* {
+  box-sizing: content-box;
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+
+body {
+  background: black;
+  /* background: linear-gradient(45deg, #4a7bcf, #6ad3cc 65%); */
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  min-height: 100vh;
+}
+
+ol, ul {
+	list-style: none;
+}
+
+blockquote, q {
+	quotes: none;
+}
+
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+
+/**
+ * Utils
+ */
+.p1 {
+  padding: 1rem;
+}
+
+.p2 {
+  padding: 1.75rem;
+}
+
+.m1 {
+  margin: 1rem;
+}
+
+.rounded {
+  border-radius: .25rem;
+}
+
+
+@import url(https://fonts.googleapis.com/css?family=Lato:400,700);
+html, body {
+  font-family: "Lato", sans-serif;
+  background: #13242f;
+  /* overflow: hidden; */
+}
+
+audio {
+  position: absolute;
+  z-index: 2;
+  right: 0;
+  top: 0;
+}
+
+.message {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-transform: uppercase;
+  border-radius: 3px;
+  text-align: center;
+  line-height: 1.2;
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  margin-left: -180px;
+  margin-top: -30px;
+  font-size: 13px;
+  padding: 20px;
+  display: none;
+  z-index: 3;
+  height: 60px;
+  width: 360px;
+  color: #fff;
+  left: 50%;
+  top: 50%;
+}
