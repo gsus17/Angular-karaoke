@@ -1,7 +1,8 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, OnInit, Output, SimpleChanges, OnChanges } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
 import { PlayerService } from '../player.service';
 import { Particle } from '../lyrics/particles';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-player-audio',
@@ -22,6 +23,7 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
   public duration: string;
   private MP3_PATH = '';
   private NUM_PARTICLES = 150;
+  private onUpdate;
 
   NUM_BANDS = 128;
 
@@ -35,11 +37,15 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
 
   ngOnInit() {
     this.audio = this.initAudio();
+    this.sketch();
+
     this.currentTime = this.service.formatTime(0);
     this.duration = this.service.formatTime(0);
   }
 
   ngAfterViewInit() {
+    console.log(`${AudioComponent.name}::ngAfterViewInit`);
+
     // Loads new audio source
     this.loadAudioSource(this.src);
 
@@ -53,9 +59,6 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
       .fromEvent(this.audio, 'loadeddata')
       .subscribe(this.handleAudioLoaded);
 
-    // // Subscribe other events
-    // this.audio.addEventListener('playing', this.handleAudioPlayed);
-    // this.audio.addEventListener('pause', this.handleAudioPaused);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -65,6 +68,8 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
   }
 
   ngOnDestroy() {
+    console.log(`${AudioComponent.name}::ngOnDestroy`);
+
     // Unsubscribe
     this.timeSubscription.unsubscribe();
     this.loadSubscription.unsubscribe();
@@ -72,9 +77,15 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
     // Destroy audio tag
     this.loadAudioSource('');
     this.audio.load();
+    const windows = <any>window;
+    if (windows.Sketch.instances.length > 0) {
+      windows.Sketch.instances[0].destroy();
+    }
   }
 
   public initAudio(): HTMLAudioElement {
+    console.log(`${AudioComponent.name}::initAudio`);
+
     const audio = new Audio();
     audio['autobuffer'] = true;
     audio.autoplay = false;
@@ -84,39 +95,47 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
   }
 
   public loadAudioSource(src: string) {
+    console.log(`${AudioComponent.name}::loadAudioSource`);
+
     this.audio.pause();
     this.handleAudioPaused();
     this.audio.src = src;
+    this.analizerAudio(this.audio);
   }
 
   public handleAudioLoaded = (e: HTMLMediaElementEventMap) => {
+    console.log(`${AudioComponent.name}::handleAudioLoaded`);
+
     this.duration = this.service.formatTime(this.audio.duration);
   }
 
   public handleAudioTimeUpdate = (e: HTMLMediaElementEventMap) => {
+    console.log(`${AudioComponent.name}::handleAudioTimeUpdate`);
+
     this.currentTime = this.service.formatTime(this.audio.currentTime);
     this.onCurrentTimeUpdate.emit(this.audio.currentTime);
   }
 
   public handleAudioPlayed = () => {
-    console.log('PLAY ORIGINAL');
+    console.log(`${AudioComponent.name}::handleAudioPlayed`);
     this.onPlayPause.emit(true);
     this.isPlaying = true;
   }
 
   public handleAudioPaused = () => {
-    console.log('PAUSA ORIGINAL');
+    console.log(`${AudioComponent.name}::handleAudioPaused`);
     this.onPlayPause.emit(false);
     this.isPlaying = false;
   }
 
   public handleAudioPlayPause() {
-    this.animates();
-    // if (this.audio.paused) {
-    //   this.audio.play();
-    // } else {
-    //   this.audio.pause();
-    // }
+    console.log(`${AudioComponent.name}::handleAudioPlayPause`);
+
+    if (this.audio.paused) {
+      this.audio.play();
+    } else {
+      this.audio.pause();
+    }
   }
 
   public sketch() {
@@ -128,7 +147,7 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
       {
         particles: [],
         setup: function () {
-          let analyser;
+          // let analyser;
           let error;
           let i = 0;
           let intro;
@@ -142,53 +161,42 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
           // generate some particles
           for (ref; j <= ref; j += 1) {
             i = i + 1;
-            // x = Math.random() * this.width;
-            // y = Math.random() * this.height * 2;
             x = Math.random() * this.width;
             y = Math.random() * this.height * 2;
             particle = new Particle(x, y);
-            // particle.energy = Math.random(particle.band / 256);
             this.particles.push(particle);
           }
-          const audioAnalyser = self.audioAnalyserFun();
-          if (audioAnalyser.enabled) {
-            try {
-              // setup the audio analyser
-              analyser = new audioAnalyser(self.src, self.NUM_BANDS, self.SMOOTHING);
-              // update particles based on fft transformed audio frequencies
-              analyser.onUpdate = (bands) => {
-                let k = 0;
-                let results;
-                const ref1 = this.particles;
-                const len = ref1.length;
-                results = [];
-                for (len; k < len; k++) {
-                  particle = ref1[k];
-                  results.push(particle.energy = bands[particle.band] / 256);
-                }
-                return results;
-              };
 
-              // start as soon as the audio is buffered
-              analyser.start();
-              document.body.appendChild(analyser.audio);
-              intro = document.getElementById('intro');
-              intro.style.display = 'none';
+          const w = <any>window;
+          const aver = w.AudioContext || w.webkitAudioContext;
 
-              // bug in Safari 6 when using getByteFrequencyData with MediaElementAudioSource
-              // @see https://goo.gl/6WLx1
-              if (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)) {
-                warning = document.getElementById('warning2');
-                return warning.style.display = 'block';
+          try {
+
+            // update particles based on fft transformed audio frequencies
+            self.onUpdate = (bands) => {
+              let k = 0;
+              let results;
+              const ref1 = this.particles;
+              const len = ref1.length;
+              results = [];
+              for (len; k < len; k++) {
+                particle = ref1[k];
+                results.push(particle.energy = bands[particle.band] / 256);
               }
-            } catch (error1) {
-              error = error1;
-            }
-          } else {
+              return results;
+            };
 
-            // Web Audio API not detected
-            warning = document.getElementById('warning1');
-            return warning.style.display = 'block';
+            intro = document.getElementById('intro');
+            intro.style.display = 'none';
+
+            // bug in Safari 6 when using getByteFrequencyData with MediaElementAudioSource
+            // @see https://goo.gl/6WLx1
+            if (/Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent)) {
+              warning = document.getElementById('warning2');
+              return warning.style.display = 'block';
+            }
+          } catch (error1) {
+            error = error1;
           }
         },
         draw: function () {
@@ -221,104 +229,81 @@ export class AudioComponent implements OnInit, AfterViewInit, OnDestroy, OnChang
     this.sketch();
   }
 
-  public audioAnalyserFun() {
-    const self = this;
-    class AudioAnalysers {
-      private w = <any>window;
-      private audio;
-      private numBands;
-      private smoothing;
-      private context;
-      private jsNode;
-      private analyser;
-      private bands;
-      private source;
-      private onUpdate;
-      public AudioContext = w.AudioContext || w.webkitAudioContext;
-      enabled = null;
 
-      constructor(audio = new Audio(), numBands = 256, smoothing = 0.3) {
-        let src;
-        this.audio = audio;
-        this.numBands = numBands;
-        this.smoothing = smoothing;
-        const windows = <any>window;
-        this.AudioContext = windows.AudioContext || windows.webkitAudioContext;
+  public analizerAudio(audio) {
+    console.log('analizerAudio');
 
-        this.enabled = windows.AudioContext != null;
-
-        // construct audio object
-        if (typeof this.audio === 'string') {
-          src = this.audio;
-          this.audio = new Audio();
-          this.audio.crossOrigin = 'anonymous';
-          this.audio.controls = true;
-          this.audio.src = src;
-        }
-
-        // setup audio context and nodes
-        // const audioAnalyser = <any>self.audioAnalyserFun;
-        this.context = new this.AudioContext();
-
-        // createScriptProcessor so we can hook onto updates
-        this.jsNode = this.context.createScriptProcessor(2048, 1, 1);
-
-        // smoothed analyser with n bins for frequency-domain analysis
-        this.analyser = this.context.createAnalyser();
-        this.analyser.smoothingTimeConstant = this.smoothing;
-        this.analyser.fftSize = this.numBands * 2;
-
-        // persistant bands array
-        this.bands = new Uint8Array(this.analyser.frequencyBinCount);
-        // circumvent http://crbug.com/112368
-        this.audio.addEventListener('canplay', () => {
-
-          // Subscribe other events
-          this.audio.addEventListener('playing', () => {
-            console.log('PLAY');
-            self.onPlayPause.emit(true);
-            self.isPlaying = true;
-            self.audio.play();
-          });
-          this.audio.addEventListener('pause', () => {
-            console.log('PAUSA');
-            self.onPlayPause.emit(false);
-            self.isPlaying = false;
-            self.audio.pause();
-          });
-          // media source
-          this.source = this.context.createMediaElementSource(this.audio);
-          // wire up nodes
-          this.source.connect(this.analyser);
-          this.analyser.connect(this.jsNode);
-          this.jsNode.connect(this.context.destination);
-          this.source.connect(this.context.destination);
-          // update each time the JavaScriptNode is called
-          return this.jsNode.onaudioprocess = () => {
-            // retreive the data from the first channel
-            this.analyser.getByteFrequencyData(this.bands);
-            if (!this.audio.paused) {
-              return typeof this.onUpdate === 'function' ? this.onUpdate(this.bands) : void 0;
-            }
-          };
-        });
-      }
-
-      start() {
-        return this.audio.play();
-      }
-
-      stop() {
-        return this.audio.pause();
-      }
-    }
-    const prueba = <any>AudioAnalysers;
     const w = <any>window;
-    prueba.AudioContext = w.AudioContext || w.webkitAudioContext;
+    const numBands = 256;
+    const smoothing = 0.3;
+    let context;
+    let jsNode;
+    let analyser;
+    let bands;
+    let source;
+    let enabled = null;
+    let src;
+    const windows = <any>window;
+    const audioContext = windows.AudioContext || windows.webkitAudioContext;
 
-    prueba.enabled = prueba.AudioContext != null;
+    enabled = windows.AudioContext != null;
 
-    return prueba;
+    // construct audio object
+    if (typeof audio === 'string') {
+      src = audio;
+      audio = new Audio();
+      audio.crossOrigin = 'anonymous';
+      audio.controls = true;
+      audio.src = src;
+    }
+
+    // setup audio context and nodes
+    // const audioAnalyser = <any>self.audioAnalyserFun;
+    context = new AudioContext();
+
+    // createScriptProcessor so we can hook onto updates
+    jsNode = context.createScriptProcessor(2048, 1, 1);
+
+    // smoothed analyser with n bins for frequency-domain analysis
+    analyser = context.createAnalyser();
+    analyser.smoothingTimeConstant = smoothing;
+    analyser.fftSize = numBands * 2;
+
+    // persistant bands array
+    bands = new Uint8Array(analyser.frequencyBinCount);
+    // circumvent http://crbug.com/112368
+    this.audio.addEventListener('canplay', () => {
+
+      // Subscribe other events
+      this.audio.addEventListener('playing', () => {
+        console.log('PLAY');
+        this.onPlayPause.emit(true);
+        this.isPlaying = true;
+        this.audio.play();
+      });
+      this.audio.addEventListener('pause', () => {
+        console.log('PAUSA');
+        this.onPlayPause.emit(false);
+        this.isPlaying = false;
+        this.audio.pause();
+      });
+      // media source
+      source = context.createMediaElementSource(audio);
+      // wire up nodes
+      source.connect(analyser);
+      analyser.connect(jsNode);
+      jsNode.connect(context.destination);
+      source.connect(context.destination);
+      const self = this;
+      // update each time the JavaScriptNode is called
+      return jsNode.onaudioprocess = () => {
+        // retreive the data from the first channel
+        analyser.getByteFrequencyData(bands);
+        if (!audio.paused) {
+          return typeof self.onUpdate === 'function' ? self.onUpdate(bands) : void 0;
+        }
+      };
+    });
   }
 
 }

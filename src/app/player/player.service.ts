@@ -2,7 +2,6 @@ import { SimpleChange } from '@angular/core';
 import { Injectable } from '@angular/core';
 import { Observable, Scheduler, Subject, Subscription } from 'rxjs';
 import { scan, map, withLatestFrom, distinctUntilChanged } from 'rxjs/operators';
-
 const { Metaphone, SoundEx } = window['natural'];
 
 @Injectable()
