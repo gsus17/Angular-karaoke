@@ -36,6 +36,13 @@ export class SongsService {
       lyrics: 'assets/songs/bohemian-rhapsody/bohemian-rhapsody.lrc',
       lyricDelay: 0,
     },
+    {
+      artist: 'Stromae',
+      title: 'Carmen ',
+      audio: 'assets/songs/carmen/carmen.mp3',
+      lyrics: 'assets/songs/carmen/carmen.lrc',
+      lyricDelay: 0,
+    },
   ];
 
   getSongList() {
