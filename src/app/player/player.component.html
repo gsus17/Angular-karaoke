@@ -19,7 +19,6 @@
 
     <div class="player-screen-controls p2">
       <app-player-audio [src]="currentSong.audio" (onCurrentTimeUpdate)="handleAudioTimeUpdate($event)" (onPlayPause)="handleAudioPlayPause($event)"></app-player-audio>
-
       <app-player-speech [playPause]="onSpeechStart" (onSpeechFound)="handleSpeechFound($event)"></app-player-speech>
     </div>
   </div>

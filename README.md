@@ -1,11 +1,28 @@
-# Angular Karaoke.
+# About Angular Karaoke 
+Angular Karaoke is a proyect to simulate a karaoke system.
 
-Created with Angular v6.
+# Technology
+* Angular v5
 
-## Build
+# Demo
+* 
 
-Run `npm install`.
+# Quickstart
+Run `npm install` 
 
-## Run app
+# Run app
+Run `ng serve --o`  for init the app.
 
-Run `npm run start` for init the app. 
+## Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Running end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+
+# Author
+* https://github.com/gsus17
+
+## License
+*This is a simple open-source software licensed under the MIT license.*

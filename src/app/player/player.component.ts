@@ -32,7 +32,6 @@ export class PlayerComponent implements OnChanges {
 
   public handleAudioPlayPause(isPlaying: boolean) {
     console.log(`${PlayerComponent.name}::handleAudioPlayPause`);
-
     this.onSpeechStart.emit(isPlaying);
   }
 
@@ -44,7 +43,6 @@ export class PlayerComponent implements OnChanges {
     const newLines = [current.line].concat(this.lines).slice(0, 5);
 
     const count = current.line.split(' ').length;
-
     console.log(`${PlayerComponent.name}::handleLyricsNewLine cantidad %o`, count);
     // Keep up to last 5 lines in array
     this.lines = newLines;
@@ -54,7 +52,6 @@ export class PlayerComponent implements OnChanges {
     console.log(`${PlayerComponent.name}::handleSpeechFound [speech match]: %o`, text);
 
     const matches = this.playerService.countMatches(text, this.lines);
-
     this.points += (matches * this.POINTS_MULTIPLIER);
   }
 

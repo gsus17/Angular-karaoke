@@ -9,7 +9,6 @@ export class PlayerService {
 
   /**
    * Alpha & space character regex
-   *
    * @private
    * @readonly
    * @type {RegExp}
@@ -18,9 +17,7 @@ export class PlayerService {
   private readonly ALPHA_REGEX: RegExp = /[^a-z\s]/gi;
 
   /**
-   *
    * Double spaces regex
-   *
    * @private
    * @type {RegExp}
    * @memberOf PlayerService
@@ -30,25 +27,21 @@ export class PlayerService {
   /**
    * Defines if whether or not a property has changed
    * and that it is not during component's first load.
-   *
    * @param {SimpleChange} change
    * @returns {boolean}
-   *
    * @memberOf PlayerService
    */
-  hasPropertyChanged(change: SimpleChange): boolean {
+  public hasPropertyChanged(change: SimpleChange): boolean {
     return !change.firstChange && change.previousValue !== change.currentValue;
   }
 
   /**
    * Formats seconds into readable [hh:]?mm:ss format
-   *
    * @param {number|string} secs
    * @returns {string} Formatted string
-   *
    * @memberOf PlayerService
    */
-  formatTime(secs: number | string): string {
+  public formatTime(secs: number | string): string {
     const secsNum = parseInt(secs.toString(), 10);
     const hours = Math.floor(secsNum / 3600) % 24;
     const minutes = Math.floor(secsNum / 60) % 60;
@@ -67,14 +60,12 @@ export class PlayerService {
 
   /**
    * Calculates number of word matches between speech and last 5 lines of lyrics
-   *
    * @param {string} speech Spoken text
    * @param {string[]} lines Last 5 lines of song lyrics
    * @returns {number} Number of exact matches found
-   *
    * @memberOf PlayerService
    */
-  countMatches(speech: string, lines: string[]): number {
+  public countMatches(speech: string, lines: string[]): number {
     let matches = 0;
 
     const speechWordsList = speech
@@ -115,8 +106,8 @@ export class PlayerService {
     return matches;
   }
 
-  pointsAnimator(value$: Subject<number>) {
-    const tick$ = Observable.interval(0, Scheduler.animationFrame)
+  public pointsAnimator(value$: Subject<number>) {
+    const tick$ = Observable.interval(0, Scheduler.animationFrame);
     const lerpValue$ = tick$.pipe(
       withLatestFrom(value$, (_, value) => value),
       scan(
