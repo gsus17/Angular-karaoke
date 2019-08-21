@@ -37,22 +37,22 @@
 }
 
 .songlist-item:nth-child(1) .songlist-item-avatar {
-  background-image: url(/assets/images/artist-1.jpg);
+  background-image: url(assets/images/artist-1.jpg);
 }
 
 .songlist-item:nth-child(2) .songlist-item-avatar {
-  background-image: url(/assets/images/artist-2.jpg);
+  background-image: url(assets/images/artist-2.jpg);
 }
 
 .songlist-item:nth-child(3) .songlist-item-avatar {
-  background-image: url(/assets/images/nightcars.jpg);
+  background-image: url(assets/images/nightcars.jpg);
 }
 
 .songlist-item:nth-child(4) .songlist-item-avatar {
-  background-image: url(/assets/images/queen.png);
+  background-image: url(assets/images/queen.png);
 }
 .songlist-item:nth-child(5) .songlist-item-avatar {
-  background-image: url(/assets/images/stromae.jpg);
+  background-image: url(assets/images/stromae.jpg);
 }
 
 .songlist-item-details-title,

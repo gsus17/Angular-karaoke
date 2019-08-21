@@ -5,7 +5,7 @@ Angular Karaoke is a proyect to simulate a karaoke system.
 * Angular v5
 
 # Demo
-* 
+* https://gsus17.github.io/Angular-karaoke/
 
 # Quickstart
 Run `npm install` 
